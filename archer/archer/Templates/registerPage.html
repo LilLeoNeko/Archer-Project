@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+{% block content %}
+	<div>
+		<form method="POST" action="">
+			{{ form.hidden_tag() }}
+			<fieldset>
+				<legend class="border-bottom mb-4">Join Now</legend>
+				<div class ="form-group">
+					<!--label the username form-->
+					{{form.username.label(class="form-control-label")}}
+					<!--Error reminder-->
+					{% if form.username.errors %}
+						{{ form.username(class="form-control form-control-lg is-invalid") }}
+						<div class = "invalid-feedback">
+							{% for error in form.username.errors %}
+								<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+					{% else %}
+						{{form.username(class="form-control form-control-lg")}}
+					{% endif %}
+				</div>
+				<div class ="form-group">
+					<!--label the user email form-->
+					{{form.useremail.label(class="form-control-label")}}
+					<!-- Error reminder -->
+					{% if form.useremail.errors %}
+						{{ form.useremail(class="form-control form-control-lg is-invalid") }}
+						<div class = "invalid-feedback">
+							{% for error in form.useremail.errors %}
+								<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+					{% else %}
+						{{form.useremail(class="form-control form-control-lg")}}
+					{% endif %}
+				</div>
+				<div class ="form-group">
+					<!--label the user password form-->
+					{{form.userpwd.label(class="form-control-label")}}
+					<!-- Error reminder -->
+					{% if form.userpwd.errors %}
+						{{ form.userpwd(class="form-control form-control-lg is-invalid") }}
+						<div class = "invalid-feedback">
+							{% for error in form.userpwd.errors %}
+								<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+					{% else %}
+						{{form.userpwd(class="form-control form-control-lg")}}
+					{% endif %}
+				</div>
+				<div class ="form-group">
+					<!--label the comfirm password form-->
+					{{form.confirmpwd.label(class="form-control-label")}}
+					<!-- Error reminder -->
+					{% if form.confirmpwd.errors %}
+						{{ form.confirmpwd(class="form-control form-control-lg is-invalid") }}
+						<div class = "invalid-feedback">
+							{% for error in form.confirmpwd.errors %}
+								<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+					{% else %}
+						{{form.confirmpwd(class="form-control form-control-lg")}}
+					{% endif %}
+				</div>
+			</fieldset>
+			<div class="form-group">
+				{{form.submit(class="btn btn-primary")}}
+			</div>
+		</form>
+	</div>
+	<div class="border-top pt-3">
+		<small class="text-muted">
+			Already have an account <a clss="ml-2" href="{{ url_for('login') }}"> Sign In </a>
+		</small>
+	</div>
+{% endblock content %}

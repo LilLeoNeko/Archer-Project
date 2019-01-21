@@ -1,0 +1,315 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"False",
+				"False"
+			],
+			[
+				"n",
+				"nullable"
+			],
+			[
+				"admin",
+				"Admin"
+			],
+			[
+				"di",
+				"div\tTag"
+			],
+			[
+				"if",
+				"ifmain\tif __name__ == '__main__'"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"contents": "from flask import Flask, url_for, render_template, flash, redirect\nfrom userForm import RegistrationForm, LoginForm\nfrom flask_sqlalchemy import SQLAlchemy\nfrom datetime import datetime\n\n\napp = Flask(__name__)\n#Secret Key generate by python secrets module\napp.config['SECRET_KEY']='4616baa48f683f54366db8f7e824f9ea'\n#SQLite as develop database\n#deploy use mysql? not sure about it\napp.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///archer.db'\ndb = SQLAlchemy(app)\n\n\nclass User(db.Model):\n\tid = db.Column(db.Integer, primary_key=True)\n\tusername = db.Column(db.String(20),unique=True,nullable=False)\n\tuseremail=db.Column(db.String(120),unique=True,nullable=False)\n\tuserpwd=db.Column(db.String(24),nullable=False)\n\n\tdef __repr__(self):\n\t\treturn '<User: %r>' % self.username\n\n# NOT DECIDED CODES# NOT DECIDED CODES# NOT DECIDED CODES# NOT DECIDED CODES\nclass Documents(db.Model):\n\tid = db.Column(db.Integer,primary_key=True)\n\t#doc_file = db.Column(db)\n\tdocname = db.Column(db.String(30),nullable=False)\n\tdoctype = db.Column(db.String(20),nullable=False)\n\tdocdate = db.Column(db.DateTime,nullable=False)\n\n\tdef __repr__(self):\n\t\treturn '<Document: %r>' % self.docname\n'''\nclass Partition(db.Model):\n\tid = db.Column(db.Integer,primary_key=True)\n\tcount = db.Column(db.Integer, nullable = False, default = 0)\n\tflag = db.Column(db.Boolean, nullable = False, default = False)\n'''\n\nclass Post(db.Model):\n\tid = db.Column(db.Integer, primary_key=True)\n\ttimestamp = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)\n\tcontent = db.Column(db.Text, nullable = False)\n\tuser_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)\n\n\tdef __repr__(self):\n\t\treturn '<Post content: %r>' % self.content\n# NOT DECIDED CODES# NOT DECIDED CODES# NOT DECIDED CODES# NOT DECIDED CODES\n\n@app.route('/')\ndef initial():\n\treturn render_template('homePage.html')\n\n@app.route('/home') \ndef home(name = None):\n\treturn render_template('homePage.html', name = name)\n\n@app.route('/login', methods=['GET','POST'])\ndef login():\n\tform = LoginForm()\n\tif form.validate_on_submit():\n\t\t#if form.email.data in database, form.password.data == password in db\n\t\t#then\n\t\tif form.useremail.data == 'admin@archer.com' and form.userpwd.data == 'archeradmin' :\n\t\t\tflash('Welcome Admin, you have been logged in.', 'success')\n\t\t\treturn redirect(url_for('home', name = Admin))\n\t\t#else if email doesn't exist, remind email not register\n\t\telse:\n\t\t\tflash('Fail to login, please check your email and password', 'danger')\n\treturn render_template('loginPage.html', form=form)\n\n@app.route('/register', methods=['GET','POST'])\ndef register():\n\tform = RegistrationForm()\n\tif form.validate_on_submit():\n\t\tflash(f'Account created for {form.username.data}', 'success')\n\t\treturn redirect(url_for('home'))\n\treturn render_template('registerPage.html',form = form)\n\n@app.route('/about')\ndef about():\n\treturn render_template('aboutPage.html')\n\nif __name__ == '__main__':\n\tapp.run(debug = True)",
+			"file": "archer.py",
+			"file_size": 3034,
+			"file_write_time": 131920101633542276,
+			"settings":
+			{
+				"buffer_size": 2948,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/leo/Dropbox/UoM/Archer"
+	],
+	"file_history":
+	[
+		"/Users/leo/Dropbox/UoM/Archer/userForm.py",
+		"/Users/leo/Dropbox/UoM/Archer/Templates/registerPage.html",
+		"/Users/leo/Dropbox/UoM/Archer/Templates/loginPage.html",
+		"/Users/leo/Dropbox/UoM/Archer/Templates/layout.html",
+		"/Users/leo/Dropbox/UoM/Archer/Templates/homePage.html",
+		"/Users/leo/Dropbox/UoM/Archer/userForm",
+		"/Users/leo/Desktop/DisplayVendorID-469/DisplayProductID-27c4",
+		"/System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-4c2d/DisplayProductID-c4d",
+		"/System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-22f0/DisplayProductID-317b.mtdd",
+		"/System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-22f0/DisplayProductID-3134",
+		"/System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-22f0/DisplayProductID-3132",
+		"/System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-10ac/DisplayProductID-409c",
+		"/System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-4c2d/DisplayProductID-4255",
+		"/System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-38a3/DisplayProductID-a47b",
+		"/System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-38a3/DisplayProductID-65a2",
+		"/System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-5a63/DisplayProductID-e02c",
+		"/System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-5a63/DisplayProductID-ae03",
+		"/System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-3cad/DisplayProductID-3700",
+		"/System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-15c3/DisplayProductID-2856",
+		"/Users/leo/Downloads/DisplayProductID-27c4.plist",
+		"/System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-469/DisplayProductID-27c4",
+		"/System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-469/DisplayProductID-32a3",
+		"/Users/leo/Desktop/softmax.py",
+		"/Users/leo/Desktop/hello.py",
+		"/Users/leo/Desktop/University of Macau/Year 3 Sem2/CISB354 Project Beta1/CISB354 Project/Train.cpp",
+		"/Users/leo/Desktop/University of Macau/Year 3 Sem2/CISB354 Project Beta1/CISB354 Project/Passenger.cpp",
+		"/Users/leo/Desktop/University of Macau/Year 3 Sem2/CISB354 Project Beta1/CISB354 Project/main.cpp",
+		"/Users/leo/Desktop/University of Macau/Year 3 Sem2/CISB355 Computer Graphics/CISB355 Lab 06/Lab06/main.cpp",
+		"/Users/leo/Desktop/University of Macau/Year 3 Sem2/CISB355 Computer Graphics/CISB355 A2/CISB355 A2/main.cpp",
+		"/Library/Preferences/SystemConfiguration/preferences.plist",
+		"/Users/leo/IdeaProjects/JavaProject_Poker/src/PokerProperties.java",
+		"/Users/leo/IdeaProjects/JavaProject_Poker/src/PokerHand.java",
+		"/Users/leo/IdeaProjects/JavaProject_Poker/src/PokerClassifier.java",
+		"/Users/leo/IdeaProjects/JavaProject_Poker/src/PokerCard.java",
+		"/Users/leo/IdeaProjects/JavaProject_Poker/src/Poker.java",
+		"/Users/leo/Desktop/temp/JavaProject_Poker 4/PokerProperties.java",
+		"/Users/leo/Desktop/temp/JavaProject_Poker 4/PokerHand.java",
+		"/Users/leo/Desktop/temp/JavaProject_Poker 4/PokerClassifier.java",
+		"/Users/leo/Desktop/temp/JavaProject_Poker 4/PokerCard.java",
+		"/Users/leo/Desktop/temp/JavaProject_Poker 4/Poker.java",
+		"/Users/leo/Desktop/temp/JavaProject_Poker 2/PokerProperties.java",
+		"/Users/leo/Desktop/temp/JavaProject_Poker 2/PokerHand.java",
+		"/Users/leo/Desktop/temp/JavaProject_Poker 2/PokerClassifier.java",
+		"/Users/leo/Desktop/temp/JavaProject_Poker 2/PokerCard.java",
+		"/Users/leo/Desktop/temp/JavaProject_Poker 2/Poker.java",
+		"/Users/leo/Desktop/temp/JavaProject_Poker 3/PokerProperties.java",
+		"/Users/leo/Desktop/temp/JavaProject_Poker 3/PokerHand.java",
+		"/Users/leo/Desktop/temp/JavaProject_Poker 3/PokerClassifier.java",
+		"/Users/leo/Desktop/temp/JavaProject_Poker 3/PokerCard.java",
+		"/Users/leo/Desktop/temp/JavaProject_Poker 3/Poker.java",
+		"/Users/leo/Desktop/peer review/poker/Suit.java",
+		"/Users/leo/Desktop/peer review/poker/Rank.java",
+		"/Users/leo/Desktop/peer review/poker/Hand.java",
+		"/Users/leo/Desktop/peer review/poker/Game.java",
+		"/Users/leo/Desktop/peer review/poker/Classification.java",
+		"/Users/leo/Desktop/peer review/poker/Player.java",
+		"/Users/leo/Desktop/peer review/poker/Card.java",
+		"/Users/leo/Desktop/peer review/poker/Poker.java",
+		"/Users/leo/Desktop/peer review/poker/CardException.java",
+		"/Users/leo/Desktop/peer review/Poker-2/Suit.java",
+		"/Users/leo/Desktop/peer review/Poker-2/Rank.java",
+		"/Users/leo/Desktop/peer review/Poker-2/Poker.java",
+		"/Users/leo/Downloads/Poker-2/Suit.java",
+		"/Users/leo/Downloads/Poker-2/Rank.java",
+		"/Users/leo/Downloads/Poker-2/Poker.java",
+		"/Users/leo/Desktop/Poker/Utility.java",
+		"/Users/leo/Desktop/Poker/Poker.java",
+		"/Users/leo/Desktop/Poker/InOutUtility.java",
+		"/Users/leo/Desktop/Poker/Card.java",
+		"/Users/leo/Desktop/temp/JavaProject_Poker/PokerProperties.java",
+		"/Users/leo/Desktop/temp/JavaProject_Poker/PokerHand.java",
+		"/Users/leo/Desktop/temp/JavaProject_Poker/PokerClassifier.java",
+		"/Users/leo/Desktop/temp/JavaProject_Poker/PokerCard.java",
+		"/Users/leo/Desktop/temp/JavaProject_Poker/Poker.java",
+		"/Users/leo/Desktop/temp/temp/PokerProperties.java",
+		"/Users/leo/Desktop/temp/temp/PokerHand.java",
+		"/Users/leo/Desktop/temp/temp/PokerClassifier.java",
+		"/Users/leo/Desktop/temp/temp/PokerCard.java",
+		"/Users/leo/Desktop/temp/temp/Poker.java",
+		"/Users/leo/Downloads/Assignment2Setup.sql",
+		"/Users/leo/Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat/2.0b4.0.9/2124ce26f767d75e5938996c02668422/Message/MessageTemp/88315eaf2d56a3af354d1615838462a7/File/CheckerChecker.java",
+		"/Users/leo/IdeaProjects/assignment2/src/Efficiency.java",
+		"/Users/leo/Downloads/LabSetup.sql",
+		"/Users/leo/Desktop/portfolio/untitled",
+		"/Users/leo/Desktop/CISB350 Project/process"
+	],
+	"find":
+	{
+		"height": 40.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "archer.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2948,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								462,
+								462
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 28.0
+	},
+	"input":
+	{
+		"height": 40.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "archer.sublime-project",
+	"replace":
+	{
+		"height": 52.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 196.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
