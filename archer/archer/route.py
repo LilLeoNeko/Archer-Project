@@ -1,18 +1,28 @@
 from flask import url_for, render_template, flash, redirect
-from flask_login import current_user, login_user, logout_user
+from flask_login import current_user, login_user, logout_user, login_required
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
 from archer import app, bcrypt, db
 from archer.forms import RegistrationForm, LoginForm
-from archer.models import User
+from archer.models import User, Partition
 
 @app.route('/')
 def initial():
 	return render_template('homePage.html')
 
-
-@app.route('/home') 
+@app.route('/home')
+@login_required
 def home():
 	return render_template('homePage.html')
 
+'''	Login as a admin
+	Provide partition management and document management
+	Also Flag check and success partition
+'''
+@app.route('/administrator')
+@login_required
+def admin():
+	return render_template('adminPage.html')
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -33,7 +43,6 @@ def login():
 			login_user(user)
 			return redirect(url_for('home'))
 	return render_template('loginPage.html', form=form)
-
 
 @app.route('/logout')
 def logout():
@@ -58,6 +67,35 @@ def register():
 		return redirect(url_for('login'))
 
 	return render_template('registerPage.html',form = form)
+
+@app.route('/work', methods=['GET','POST'])
+@login_required
+def work():
+	# Get corresponding partition first
+	'''
+
+	if request.method is 'POST':
+		abcd
+		form = PostForm()
+	if form.validate_on_submit():
+		return redirect(url_for('work'))
+	'''
+
+	return render_template('workPage.html')
+
+@app.route('/test', methods=['GET','POST'])
+def test():
+	class TestForm(FlaskForm):
+		pass
+	x = 5
+	for i in range(0,x):
+		setattr (TestForm,'field'+str(i), StringField('content') )
+
+	setattr(TestForm, 'submit', SubmitField('Next'))
+
+	form = TestForm()
+	return render_template('test.html', form = form)
+
 
 @app.route('/about')
 def about():
