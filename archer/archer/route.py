@@ -2,10 +2,11 @@ import os
 from flask import url_for, render_template, flash, redirect, request
 from flask_login import current_user, login_user, logout_user, login_required
 from flask_wtf import FlaskForm
+from sqlalchemy.sql.expression import func, select
 from wtforms import StringField, SubmitField
 from archer import app, bcrypt, db
 from archer.forms import RegistrationForm, LoginForm
-from archer.models import User, Partition
+from archer.models import User, Partition, Post
 from archer.CropPdf import CropPdf
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -23,8 +24,7 @@ def home():
 	Provide partition management and document management
 	Also Flag check and success partition
 '''
-@app.route('/administrator')
-@login_required
+@app.route('/admin')
 def admin():
 	return render_template('adminPage.html')
 
@@ -101,12 +101,17 @@ def login():
 			flash('Login failed, please check your email and password', 'danger')
 			return redirect(url_for('login'))
 		#else if email doesn't exist, remind email not register
+		elif user.username is "admin":
+			login_user(user)
+			return redirect(url_for('admin'))
 		else:
 			login_user(user)
 			return redirect(url_for('home'))
+
 	return render_template('loginPage.html', form=form)
 
 @app.route('/logout')
+@login_required
 def logout():
 	logout_user()
 	return redirect(url_for('initial'))
@@ -133,32 +138,76 @@ def register():
 @app.route('/work', methods=['GET','POST'])
 @login_required
 def work():
-	# Get corresponding partition first
-	'''
+	# first of all, return a random partition id 
+	# and check it has been edited by current_user or not
+	
+	rand_part = Partition.query.filter(Partition.count < 2).order_by(func.random()).first()
+	col_num = rand_part.getcolumn()
+	
+	# considering post form as a temporal form
+	# which may varies due to different partition have different columns
+	class PostForm(FlaskForm):
+		pass
 
-	if request.method is 'POST':
-		abcd
-		form = PostForm()
+	for i in range(0,col_num):
+		setattr (PostForm,'field'+str(i), StringField('content') )
+
+	setattr(PostForm, 'submit', SubmitField('Next'))
+
+	form = PostForm()
 	if form.validate_on_submit():
-		return redirect(url_for('work'))
-	'''
+		templist = ""
+		for field in form:
+			if field.type == 'StringField':
+				templist  += ';%s' % field.data
+		
+		newpost = Post(user_id = current_user.getid(),
+						part_id = rand_part.getid(),
+						content = templist)
 
-	return render_template('workPage.html')
+		# increase count by 1
+		partcount = rand_part.getcount()
+		rand_part.count = partcount + 1
+
+		# commit to db
+		db.session.add(newpost)
+		db.session.commit()
+	return render_template('workPage.html', form = form, part = rand_part)
 
 @app.route('/test', methods=['GET','POST'])
 def test():
-	class TestForm(FlaskForm):
-		pass
-	x = 5
-	for i in range(0,x):
-		setattr (TestForm,'field'+str(i), StringField('content') )
-
-	setattr(TestForm, 'submit', SubmitField('Next'))
-
-	form = TestForm()
-	return render_template('test.html', form = form)
+	posts = Post.query.filter_by(user_id = current_user.getid()).all()
+	return render_template('test.html', posts = posts)
 
 
 @app.route('/about')
 def about():
 	return render_template('aboutPage.html')
+
+@app.route('/check')
+@login_required
+def check():
+	#for admin to check current post for each partition
+	#each partition has two post or less, if two post has same content, flag will not rise
+	#otherwise flag will be rised and admin will notice the difference
+
+	
+	# Get current finished partitions
+	temp_parts = Partition.query.filter_by(count = 2).all()
+
+	# Get post related to finished partition
+	for part in temp_parts:
+		posts = Post.query.filter_by(part_id = part.getid()).all()
+		post1 = posts[0].getcontent()
+		post2 = posts[1].getcontent()
+		if post1 != post2:
+			part.setflag()
+	
+	temp_parts = Partition.query.filter_by(flag = True).all()
+	
+	return render_template('check.html', parts = temp_parts)
+
+@app.route('/check/detail')
+@login_required
+def detail():
+	return render_template('test.html')

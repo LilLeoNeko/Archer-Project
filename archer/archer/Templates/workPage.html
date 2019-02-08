@@ -1,9 +1,25 @@
 {% extends "layout.html" %}
 {% block content %}
-<form>
-    <p>
-        <label>Line1:</label> <input type="text">
-        <label>Line2:</label> <input type="text">
-    </p>
-</form>
+	<h1>WorkShop</h1>
+	<div>
+		<embed src = "{{ url_for('static', filename = part.geturl()) }}" width = "720" height="375" type = "application/pdf">
+	</div>
+	<form method = "POST">
+		{{ form.hidden_tag()}}
+		<fieldset>
+			{% for field in form %}
+				{% if (field.widget.input_type!='hidden')
+					and (field.type != "SubmitField")%}
+				<div class ="form-group">
+					{{ field.label(class="form-control-label") }}
+					{{ field(class="form-control form-control-lg") }}
+				</div>
+				{% elif field.type == "SubmitField" %}
+				<div class = 'form-group'>
+					{{field(class="btn btn-primary")}}
+				</div>
+				{% endif %}
+			{% endfor %}
+		</fieldset>
+	</form>
 {% endblock content %}

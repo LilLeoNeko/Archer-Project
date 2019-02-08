@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+	<h1>Admin Check Page</h1>
+
+	{% for part in parts %}
+		<div class ="container">
+			<div class = "media-body">
+				<embed src = "{{ url_for('static', filename = part.geturl()) }}" width = "720" height="375" type = "application/pdf">
+			</div>>
+			<h2>{{ part.editor1.username }}</h2>
+			<h2>{{ part.editor2.username }}</h2>>
+		</div>
+	{% endfor %}
+{% endblock content %}

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, FormField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from archer.models import User
 
@@ -35,10 +35,3 @@ class LoginForm(FlaskForm):
 		validators = [DataRequired()])
 	#submit registration
 	submit = SubmitField('Login')
-
-class PostForm(FlaskForm):
-	submit = SubmitField('Complete')
-
-	def appendField(Pos, name, field):
-		setattr(PostForm, content, TextAreaField())
-		return PostForm

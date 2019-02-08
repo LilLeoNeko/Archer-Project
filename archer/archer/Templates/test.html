@@ -1,15 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 	<h1>Test Page</h1>
-	<form method = "POST">
-		{{ form.hidden_tag()}}
-		<fieldset>
-			{% for field in form if field.widget.input_type!='hidden' %}
-			<div class ="form-group">
-				{{ field.label }}
-				{{ field }}
-			</div>
-		{% endfor %}
-		</fieldset>
-	</form>
+	{% for post in posts %}
+		{{}}
+	{% endfor %}
 {% endblock content %}
