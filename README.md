@@ -23,10 +23,3 @@ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/
 
 brew install poppler
 
-2. Run the program use:
-python3 simulator.py PATH/"file_name.pdf" NUMBEROFSECTION
-e.g 
-python3 simulator.py death1/"Alberry, Frank 1968.pdf" 6
-python3 simulator.py death2/"BARBER_Robert_Glayward_1956.pdf" 5
-python3 simulator.py death3/"VIC death 1885_9952_9956.pdf" L3
-NumOfSection of .pdfs in death3 need add 'L' or 'R' as prefix.

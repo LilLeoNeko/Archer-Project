@@ -1,4 +1,37 @@
 {% extends "layout.html" %}
 {% block content %}
 	<h1>Admin Page</h1>
+	<h4>Upload Birth Certificate Format1:</h4>
+	<form id="upload-form" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+		<input type="file" name="birth_1" accept="application/pdf" multiple>
+		<input type="submit" value="Submit">
+	</form>
+	<br>
+	<br>
+	<br>
+
+	<h4>Upload Death Certificate Format1:</h4>
+	<form id="upload-form" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+		<input type="file" name="death_1" accept="application/pdf" multiple>
+		<input type="submit" value="Submit">
+	</form>
+	<br>
+	<br>
+	<br>
+
+	<h4>Upload Death Certificate Format2:</h4>
+	<form id="upload-form" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+		<input type="file" name="death_2" accept="application/pdf" multiple>
+		<input type="submit" value="Submit">
+	</form>
+	<br>
+	<br>
+	<br>
+
+
+	<h4>Upload Death Certificate Format3:</h4>
+	<form id="upload-form" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+		<input type="file" name="death_3" accept="application/pdf" multiple>
+		<input type="submit" value="Submit">
+	</form>
 {% endblock content %}

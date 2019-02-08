@@ -1,10 +1,14 @@
-from flask import url_for, render_template, flash, redirect
+import os
+from flask import url_for, render_template, flash, redirect, request
 from flask_login import current_user, login_user, logout_user, login_required
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from archer import app, bcrypt, db
 from archer.forms import RegistrationForm, LoginForm
 from archer.models import User, Partition
+from archer.CropPdf import CropPdf
+
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 @app.route('/')
 def initial():
@@ -23,6 +27,64 @@ def home():
 @login_required
 def admin():
 	return render_template('adminPage.html')
+
+@app.route('/upload', methods=["POST"])
+@login_required
+def upload():
+	target = os.path.join(APP_ROOT, 'Certificates/')
+	if not os.path.isdir(target):
+		os.mkdir(target)
+
+	for file in request.files.getlist("birth_1"):
+		print(file)
+		if file:
+			filename=file.filename
+			target1 = os.path.join(target, 'birth_1/')
+			if not os.path.isdir(target1):
+				os.mkdir(target1)
+			destination = "/".join([target1, filename])
+			print(destination)
+			file.save(destination)
+			CropPdf(filename, target1)
+
+
+	for file in request.files.getlist("death_1"):
+		print(file)
+		if file:
+			filename=file.filename
+			target1 = os.path.join(target, 'death_1/')
+			if not os.path.isdir(target1):
+				os.mkdir(target1)
+			destination = "/".join([target1, filename])
+			print(destination)
+			file.save(destination)
+			CropPdf(filename, target1)
+
+	for file in request.files.getlist("death_2"):
+		print(file)
+		if file:
+			filename=file.filename
+			target1 = os.path.join(target, 'death_2/')
+			if not os.path.isdir(target1):
+				os.mkdir(target1)
+			destination = "/".join([target1, filename])
+			print(destination)
+			file.save(destination)
+			CropPdf(filename, target1)
+
+	for file in request.files.getlist("death_3"):
+		print(file)
+		if file:
+			filename=file.filename
+			target1 = os.path.join(target, 'death_3/')
+			if not os.path.isdir(target1):
+				os.mkdir(target1)
+			destination = "/".join([target1, filename])
+			print(destination)
+			file.save(destination)
+			CropPdf(filename, target1)
+
+	return render_template("upload_completed.html")
 
 @app.route('/login', methods=['GET','POST'])
 def login():
