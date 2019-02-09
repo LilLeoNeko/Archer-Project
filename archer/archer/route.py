@@ -31,7 +31,7 @@ def admin():
 @app.route('/upload', methods=["POST"])
 @login_required
 def upload():
-	target = os.path.join(APP_ROOT, 'Certificates/')
+	target = os.path.join(APP_ROOT, 'static/')
 	if not os.path.isdir(target):
 		os.mkdir(target)
 
