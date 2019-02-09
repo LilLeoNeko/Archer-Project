@@ -6,7 +6,7 @@ from sqlalchemy.sql.expression import func, select
 from wtforms import StringField, SubmitField
 from archer import app, bcrypt, db
 from archer.forms import RegistrationForm, LoginForm
-from archer.models import User, Partition, Post
+from archer.models import User, Document, Partition, Post
 from archer.CropPdf import CropPdf
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -154,9 +154,10 @@ def work():
 	
 	rand_part = Partition.query.filter(Partition.count < 2).order_by(func.random()).first()
 	col_num = rand_part.getcolumn()
-	
+
 	# considering post form as a temporal form
 	# which may varies due to different partition have different columns
+
 	class PostForm(FlaskForm):
 		pass
 
@@ -201,7 +202,6 @@ def check():
 	#for admin to check current post for each partition
 	#each partition has two post or less, if two post has same content, flag will not rise
 	#otherwise flag will be rised and admin will notice the difference
-
 	
 	# Get current finished partitions
 	temp_parts = Partition.query.filter_by(count = 2).all()
