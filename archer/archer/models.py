@@ -23,7 +23,7 @@ class Document(db.Model):
 	__tablename__ = 'document'
 	id = db.Column(db.Integer,primary_key=True)
 	#doc_file = db.Column(db)
-	docname = db.Column(db.String(30),nullable=False)
+	docname = db.Column(db.String(30), unique = True, nullable=False)
 	doctype = db.Column(db.String(20),nullable=False)
 	# docdate = db.Column(db.DateTime,nullable=False)
 	

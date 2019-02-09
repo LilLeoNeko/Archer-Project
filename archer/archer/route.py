@@ -45,8 +45,10 @@ def upload():
 			destination = "/".join([target1, filename])
 			print(destination)
 			file.save(destination)
+			newdoc = Document(docname = filename, doctype = "birth_1")
+			db.session.add(newdoc)
+			db.session.commit()
 			CropPdf(filename, target1)
-
 
 	for file in request.files.getlist("death_1"):
 		print(file)
@@ -58,6 +60,9 @@ def upload():
 			destination = "/".join([target1, filename])
 			print(destination)
 			file.save(destination)
+			newdoc = Document(docname = filename, doctype = "death_1")
+			db.session.add(newdoc)
+			db.session.commit()
 			CropPdf(filename, target1)
 
 	for file in request.files.getlist("death_2"):
@@ -70,6 +75,9 @@ def upload():
 			destination = "/".join([target1, filename])
 			print(destination)
 			file.save(destination)
+			newdoc = Document(docname = filename, doctype = "death_2")
+			db.session.add(newdoc)
+			db.session.commit()
 			CropPdf(filename, target1)
 
 	for file in request.files.getlist("death_3"):
@@ -82,6 +90,9 @@ def upload():
 			destination = "/".join([target1, filename])
 			print(destination)
 			file.save(destination)
+			newdoc = Document(docname = filename, doctype = "death_3")
+			db.session.add(newdoc)
+			db.session.commit()
 			CropPdf(filename, target1)
 
 	return render_template("upload_completed.html")
