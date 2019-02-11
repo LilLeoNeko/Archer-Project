@@ -1,10 +1,12 @@
 {% extends "layout.html" %}
 {% block content %}
 	<h1>WorkShop</h1>
+	<h1>{{part.getid()}}</h1>
 	<div>
 		<embed src = "{{ url_for('static', filename = part.geturl()) }}" width = "720" height="375" type = "application/pdf">
 	</div>
-	<form method = "POST">
+
+	<form method = "POST" action = "">
 		{{ form.hidden_tag()}}
 		<fieldset>
 			{% for field in form %}

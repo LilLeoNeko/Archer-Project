@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block content %}
+	<h1>History Page</h1>
+	{% for post in posts %}
+		{{post.user_id}}
+		{{post.part_id}}
+		{{post.content}}
+	{% endfor %}
+{% endblock content %}
