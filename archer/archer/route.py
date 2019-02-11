@@ -2,8 +2,11 @@ import os
 from flask import url_for, render_template, flash, redirect, request
 from flask_login import current_user, login_user, logout_user, login_required
 from flask_wtf import FlaskForm
+
 from sqlalchemy.sql.expression import func, select
 from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired
+
 from archer import app, bcrypt, db
 from archer.forms import RegistrationForm, LoginForm
 from archer.models import User, Document, Partition, Post
@@ -19,6 +22,10 @@ def initial():
 @login_required
 def home():
 	return render_template('homePage.html')
+
+@app.route('/about')
+def about():
+	return render_template('aboutPage.html')
 
 '''	Login as a admin
 	Provide partition management and document management
@@ -137,7 +144,8 @@ def register():
 	if form.validate_on_submit():
 		#create and store hash password
 		hashPwd = bcrypt.generate_password_hash(form.userpwd.data).decode('utf-8')
-		newuser = User(username = form.username.data, useremail = form.useremail.data, userpwd = hashPwd)
+		newuser = User(username = form.username.data, 
+					useremail = form.useremail.data, userpwd = hashPwd)
 		db.session.add(newuser)
 		db.session.commit()
 		#Feedback to user, auto redirect to login page
@@ -149,11 +157,17 @@ def register():
 @app.route('/work', methods=['GET','POST'])
 @login_required
 def work():
+	global cur_part
 	# first of all, return a random partition id 
 	# and check it has been edited by current_user or not
-	
-	rand_part = Partition.query.filter(Partition.count < 2).order_by(func.random()).first()
-	col_num = rand_part.getcolumn()
+	rand_part = Partition.query.filter(Partition.count < 2).\
+				filter(Partition.editor1 != current_user.id).\
+				filter(Partition.editor2 != current_user.id).\
+				order_by(func.random()).first()
+				
+	if request.method == 'GET':
+		cur_part = rand_part
+	col_num = cur_part.getcolumn()
 
 	# considering post form as a temporal form
 	# which may varies due to different partition have different columns
@@ -162,11 +176,11 @@ def work():
 		pass
 
 	for i in range(0,col_num):
-		setattr (PostForm,'field'+str(i), StringField('content') )
-
+		setattr (PostForm,'field'+str(i), StringField('content', 
+													validators = [DataRequired()]) )
 	setattr(PostForm, 'submit', SubmitField('Next'))
-
 	form = PostForm()
+
 	if form.validate_on_submit():
 		templist = ""
 		for field in form:
@@ -174,33 +188,53 @@ def work():
 				templist  += ';%s' % field.data
 		
 		newpost = Post(user_id = current_user.getid(),
-						part_id = rand_part.getid(),
+						part_id = cur_part.getid(),
 						content = templist)
+		db.session.add(newpost)
 
-		# increase count by 1
-		partcount = rand_part.getcount()
-		rand_part.count = partcount + 1
+		# get current count
+		partcount = cur_part.getcount()
+		print(cur_part.id)
+		print(partcount)
+		print("current user id: %d" %current_user.id)
+		# set editor and increase count
+		if partcount == 0:
+			print("editing editor1")
+			#temp_part.seteditor1(current_user.getid())
+			setattr(Partition.query.filter_by(id = cur_part.id).first(),
+					'editor1',current_user.getid())
+		elif partcount == 1:
+			print("editing editor2")
+			#temp_part.seteditor2(current_user.getid())
+			setattr(Partition.query.filter_by(id = cur_part.id).first(),
+					'editor2',current_user.getid())
+
+		#temp_part.setcount()
+		setattr(Partition.query.filter_by(id = cur_part.id).first(),
+				'count', partcount + 1)
 
 		# commit to db
-		db.session.add(newpost)
+		db.session.flush()
 		db.session.commit()
-	return render_template('workPage.html', form = form, part = rand_part)
 
-@app.route('/test', methods=['GET','POST'])
-def test():
+		print("new count: %d" %cur_part.getcount())
+
+		flash('Your post has been uploaded.', 'success')
+		return redirect(url_for('home'))
+
+	return render_template('workPage.html', form = form, part = cur_part)
+
+@app.route('/history')
+def history():
 	posts = Post.query.filter_by(user_id = current_user.getid()).all()
-	return render_template('test.html', posts = posts)
+	return render_template('historyPage.html', posts = posts)
 
-
-@app.route('/about')
-def about():
-	return render_template('aboutPage.html')
 
 @app.route('/check')
 @login_required
 def check():
 	#for admin to check current post for each partition
-	#each partition has two post or less, if two post has same content, flag will not rise
+	#each partition has two post or less, if two post same, flag will not rise
 	#otherwise flag will be rised and admin will notice the difference
 	
 	# Get current finished partitions
@@ -212,11 +246,12 @@ def check():
 		post1 = posts[0].getcontent()
 		post2 = posts[1].getcontent()
 		if post1 != post2:
-			part.setflag()
+			#part.setflag()
+			setattr(part, 'flag', True)
 	
 	temp_parts = Partition.query.filter_by(flag = True).all()
 	
-	return render_template('check.html', parts = temp_parts)
+	return render_template('check.html', parts = temp_parts, post1 = post1, post2 = post2)
 
 @app.route('/check/detail')
 @login_required

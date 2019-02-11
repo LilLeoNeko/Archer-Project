@@ -35,12 +35,12 @@ class Partition(db.Model):
 	__tablename__ = 'partition'
 	id = db.Column(db.Integer,primary_key=True)
 	doc_id = db.Column(db.Integer, db.ForeignKey('document.id'), nullable=False)
-	editor1 = db.Column(db.String(20), db.ForeignKey('user.username'))
-	editor2 = db.Column(db.String(20), db.ForeignKey('user.username'))
+	editor1 = db.Column(db.Integer, db.ForeignKey('user.id'))
+	editor2 = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 	column = db.Column(db.Integer, nullable = False)
-	count = db.Column(db.Integer, nullable = False, default = 0)
-	flag = db.Column(db.Boolean, nullable = False, default = False)
+	count = db.Column(db.Integer, nullable = False)
+	flag = db.Column(db.Boolean, nullable = False)
 	url = db.Column(db.String(120),nullable = False, unique = True)
 
 	def getid(self):
@@ -48,12 +48,6 @@ class Partition(db.Model):
 
 	def geteditor1(self):
 		return self.editor1
-
-	def seteditor1(self, name):
-		self.editor1 = name
-
-	def seteditor2(self, name):
-		self.editor2 = name
 
 	def geteditor2(self):
 		return self.editor2
@@ -64,14 +58,23 @@ class Partition(db.Model):
 	def getcount(self):
 		return self.count
 
+	def setcount(self):
+		self.count += 1
+
 	def getflag(self):
 		return self.flag
 
-	def setflag(self):
-		self.flag = True
-
 	def geturl(self):
 		return self.url
+
+'''
+	def setflag(self):
+		self.flag = True
+	def seteditor1(self, user_id):
+		self.editor1 = user_id
+	def seteditor2(self, user_id):
+		self.editor2 = user_id
+'''
 
 # partition to user is a many to many relationship
 # each partition may have 2 users to enter, each user can edit numerous partition
