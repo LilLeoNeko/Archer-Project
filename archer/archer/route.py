@@ -45,6 +45,9 @@ def upload():
 	target = os.path.join(APP_ROOT, 'static/')
 	if not os.path.isdir(target):
 		os.mkdir(target)
+	if 'file' not in request.files:
+		flash('No file has been submit', 'danger')
+		return redirect(url_for('admin'))
 
 	for file in request.files.getlist("birth_1"):
 		print(file)
