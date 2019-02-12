@@ -32,7 +32,11 @@ def about():
 	Also Flag check and success partition
 '''
 @app.route('/admin')
+@login_required
 def admin():
+	if current_user.username != "admin":
+		flash('Oops, wrong place to go', 'danger')
+		return redirect(url_for('home'))
 	return render_template('adminPage.html')
 
 @app.route('/upload', methods=["POST"])
@@ -118,8 +122,9 @@ def login():
 		if user is None or not bcrypt.check_password_hash(user.userpwd, form.userpwd.data):
 			flash('Login failed, please check your email and password', 'danger')
 			return redirect(url_for('login'))
-		#else if email doesn't exist, remind email not register
-		elif user.username is "admin":
+		# if user is admin
+		elif user.username == "admin" and bcrypt.\
+		check_password_hash(user.userpwd, form.userpwd.data):
 			login_user(user)
 			return redirect(url_for('admin'))
 		else:
@@ -225,6 +230,7 @@ def work():
 	return render_template('workPage.html', form = form, part = cur_part)
 
 @app.route('/history')
+@login_required
 def history():
 	posts = Post.query.filter_by(user_id = current_user.getid()).all()
 	return render_template('historyPage.html', posts = posts)
@@ -236,7 +242,10 @@ def check():
 	#for admin to check current post for each partition
 	#each partition has two post or less, if two post same, flag will not rise
 	#otherwise flag will be rised and admin will notice the difference
-	
+	if current_user.username != "admin":
+		flash('Oops, wrong place to go', 'danger')
+		return redirect(url_for('home'))
+
 	# Get current finished partitions
 	temp_parts = Partition.query.filter_by(count = 2).all()
 
@@ -251,7 +260,7 @@ def check():
 	
 	temp_parts = Partition.query.filter_by(flag = True).all()
 	
-	return render_template('check.html', parts = temp_parts, post1 = post1, post2 = post2)
+	return render_template('checkPage.html', parts = temp_parts, post1 = post1, post2 = post2)
 
 @app.route('/check/detail')
 @login_required

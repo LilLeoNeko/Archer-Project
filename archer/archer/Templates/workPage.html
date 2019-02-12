@@ -1,9 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
 	<h1>WorkShop</h1>
-	<h1>{{part.getid()}}</h1>
-	<div>
-		<embed src = "{{ url_for('static', filename = part.geturl()) }}" width = "720" height="375" type = "application/pdf">
+	<div class="w-100 p-3">
+		<embed src = "{{ url_for('static', filename = part.geturl()) }}" width = "800" height="375" type = "application/pdf">
 	</div>
 
 	<form method = "POST" action = "">

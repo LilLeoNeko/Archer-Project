@@ -1,8 +1,17 @@
 {% extends "layout.html" %}
 {% block content %}
+<div class = starter-template>
 	{%if not current_user.is_anonymous%}
-	<h1>Welcome {{current_user.username}} </h1>
+		<h1 class="display-4 mb-4"> Welcome back {{current_user.username}}</h1>
+		<div class = "mt-5">
+			<p><a class="btn btn-primary btn-lg" href="{{ url_for('work') }}" role="button">Start Work &raquo;</a></p>
+		</div>
 	{%else%}
-	<h1> Home Page </h1>
+		<h1 class="display-4 font-weight-bold"> Welcome to Archer </h1>
+		<p> This is the homepage of Archer, a web application designed for PDF transcribition</p>
+		<div class = "mt-5">
+			<p><a class="btn btn-primary btn-lg" href="{{ url_for('about') }}" role="button">About Us &raquo;</a></p>
+		</div>
 	{% endif %}
+</div>
 {% endblock content %}

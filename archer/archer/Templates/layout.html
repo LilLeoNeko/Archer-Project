@@ -5,10 +5,20 @@
 	<!-- Meta Tags-->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<style>
+		.footer {
+		  position: fixed;
+		  left: 0;
+		  bottom: 0;
+		  width: 100%;
+		  text-align: center;
+		}
+	</style>
 	<!--Bootstrap CSS-->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 	<!-- Custom styles for this template -->
     <link href="https://getbootstrap.com/docs/4.2/examples/starter-template/starter-template.css" rel="stylesheet">
+
 </head>
 <body>
 	<!----- Navigation Bar ----->
@@ -26,11 +36,23 @@
 						<a class="nav-link" href="/about">About</a>
 					</li>
 				</ul>
-				{% else %}
+				{% elif current_user.username == "admin" %}
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item">
-						<a class="nav-link" href="/home">Home</a>
+						<a class="nav-link" href="/admin">Manage</a>
 					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/work">Work</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/history">History</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/about">About</a>
+					</li>
+				</ul>
+				{% else %}
+				<ul class="navbar-nav mr-auto">
 					<li class="nav-item">
 						<a class="nav-link" href="/work">Work</a>
 					</li>
@@ -58,21 +80,25 @@
 	</nav>
 
 	<main role="main" class="container">
-		
-		<!--Flask Flash Message detect-->
-		{% with messages = get_flashed_messages(with_categories=true) %}
-			{% if messages %}
-				{% for category, message in messages %}
-					<div class="alert alert-{{ category }}">
-						{{ message }}
-					</div>
-				{% endfor %}
-			{% endif %}
-		{% endwith %}
+			<!--Flask Flash Message detect-->
 
-		<!--Flask Content detect-->
-		{% block content %}{% endblock %}
+			{% with messages = get_flashed_messages(with_categories=true) %}
+				{% if messages %}
+					{% for category, message in messages %}
+						<div class="alert alert-{{ category }}">
+							{{ message }}
+						</div>
+					{% endfor %}
+				{% endif %}
+			{% endwith %}
+
+			<!--Flask Content detect-->
+			{% block content %}{% endblock %}
 	</main>
+
+	<div class="footer border-top align-text-bottom">
+  		<p>&copy; Archer Project 2018-2019</p>
+	</div>
 	<!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
