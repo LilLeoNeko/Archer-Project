@@ -75,6 +75,7 @@ def upload():
 def login():
 
 	if current_user.is_authenticated:
+		flash('Hey, you already logged in','danger')
 		return redirect(url_for('home'))
 
 	form = LoginForm()
@@ -110,15 +111,23 @@ def register():
 
 	form = RegistrationForm()
 	if form.validate_on_submit():
-		#create and store hash password
-		hashPwd = bcrypt.generate_password_hash(form.userpwd.data).decode('utf-8')
-		newuser = User(username = form.username.data, 
-					useremail = form.useremail.data, userpwd = hashPwd)
-		db.session.add(newuser)
-		db.session.commit()
-		#Feedback to user, auto redirect to login page
-		flash('Your account has been created, please login.', 'success')
-		return redirect(url_for('login'))
+		#check current username or user email exist or not
+		if User.query.filter_by(username = form.username.data).first():
+			flash('This user name has been used','danger')
+			return redirect(url_for('register'))
+		elif User.query.filter_by(useremail = form.useremail.data).first():
+			flash('This E-mail has been registered','danger')
+			return redirect(url_for('register'))
+		else:
+			#create and store hash password
+			hashPwd = bcrypt.generate_password_hash(form.userpwd.data).decode('utf-8')
+			newuser = User(username = form.username.data, 
+						useremail = form.useremail.data, userpwd = hashPwd)
+			db.session.add(newuser)
+			db.session.commit()
+			#Feedback to user, auto redirect to login page
+			flash('Your account has been created, please login.', 'success')
+			return redirect(url_for('login'))
 
 	return render_template('registerPage.html',form = form)
 
