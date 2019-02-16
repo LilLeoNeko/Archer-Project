@@ -1,43 +1,28 @@
 {% extends "layout.html" %}
 {% block content %}
-	<h1 class = "mb-4">Admin Page</h1>
-	<h4 class = "mb-4">Upload Birth Certificate Format1:</h4>
-	<form id="upload-form" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
-		<input type="file" name="birth_1" accept="application/pdf" multiple>
-		<input type="submit" value="Submit">
+	<h1 class = "mb-5">Admin Page</h1>
+	<h4 class = "mb-4">Upload Certificates</h4>
+
+	<form class = "mb-5" id="upload-form" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+		<div class = "form-group">
+  			<div class="custom-file">
+    			<input type="file" name="files" class="custom-file-input" id="files" accept="application/pdf" multiple>
+    			<label class="custom-file-label" for="files">Choose file</label>
+  			</div>
+		</div>
+		<div class = "form-group">
+			<label for="select" >Select Certificate Type:</label>
+			<select class = "form-control" name = "select">
+				<option value = "death_1885-1929">death_1885-1929</option>
+				<option value = "death_1940-1956">death_1940-1956</option>
+				<option value = "death_1959-1966">death_1959-1966</option>
+				<option value = "death_1968-1973">death_1968-1973</option>
+			</select>
+		</div>
+		<input class= "btn btn-primary" type="submit"  value="Submit">
 	</form>
-	<br>
-	<br>
-	<br>
 
-	<h4 class = "mb-4">Upload Death Certificate Format1:</h4>
-	<form id="upload-form" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
-		<input type="file" name="death_1" accept="application/pdf" multiple>
-		<input type="submit" value="Submit">
-	</form>
-	<br>
-	<br>
-	<br>
-
-	<h4 class = "mb-4">Upload Death Certificate Format2:</h4>
-	<form id="upload-form" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
-		<input type="file" name="death_2" accept="application/pdf" multiple>
-		<input type="submit" value="Submit">
-	</form>
-	<br>
-	<br>
-	<br>
-
-
-	<h4 class = "mb-4">Upload Death Certificate Format3:</h4>
-	<form id="upload-form" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
-		<input type="file" name="death_3" accept="application/pdf" multiple>
-		<input type="submit" value="Submit">
-	</form>
-	<br>
-	<br>
-	<br>
-
-	<h4 class = "mb-4">Check Current Results:  <a class="btn btn-secondary" href="{{ url_for('check') }}" role="button">Check Now &raquo;</a></h4>
+	<h4 class = "mb-4">Check Current Results:</h4>
+	<p><a class="btn btn-primary" href="{{ url_for('check') }}" role="button">Check Now &raquo;</a></p>
 
 {% endblock content %}

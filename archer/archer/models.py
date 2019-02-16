@@ -12,6 +12,7 @@ class User(UserMixin,db.Model):
 	username = db.Column(db.String(20),unique=True,nullable=False)
 	useremail=db.Column(db.String(120),unique=True,nullable=False)
 	userpwd=db.Column(db.String(24),nullable=False)
+	partitions = db.relationship('Post', backref='author', lazy=True)
 
 	def __repr__(self):
 		return '<User: %r>' % self.username
@@ -25,6 +26,7 @@ class Document(db.Model):
 	#doc_file = db.Column(db)
 	docname = db.Column(db.String(30), unique = True, nullable=False)
 	doctype = db.Column(db.String(20),nullable=False)
+	partitions = db.relationship('Partition', backref='doc', lazy=True)
 	# docdate = db.Column(db.DateTime,nullable=False)
 	
 
@@ -42,6 +44,9 @@ class Partition(db.Model):
 	count = db.Column(db.Integer, nullable = False)
 	flag = db.Column(db.Boolean, nullable = False)
 	url = db.Column(db.String(120),nullable = False, unique = True)
+	properties = db.Column(db.String, nullable=False)
+
+	editors = db.relationship('Post', backref='partition', lazy=True)
 
 	def getid(self):
 		return self.id
@@ -58,16 +63,18 @@ class Partition(db.Model):
 	def getcount(self):
 		return self.count
 
-	def setcount(self):
-		self.count += 1
-
 	def getflag(self):
 		return self.flag
 
 	def geturl(self):
 		return self.url
 
+	def getproperties(self):
+		return [str(i) for i in self.properties.split(';')]
+
 '''
+	def setcount(self):
+		self.count += 1
 	def setflag(self):
 		self.flag = True
 	def seteditor1(self, user_id):
@@ -83,13 +90,15 @@ class Partition(db.Model):
 
 class Post(db.Model):
 	__tablename__ = 'post'
-	user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True, nullable=False)
-	part_id = db.Column(db.Integer, db.ForeignKey('partition.id'), primary_key = True, nullable = False)
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
+	part_id = db.Column(db.Integer, db.ForeignKey('partition.id'), primary_key = True)
 	#not sure if it still needs ID
 	#id = db.Column(db.Integer, primary_key=True)
 	timestamp = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
 	content = db.Column(db.String, nullable = False)
 
+	user = db.relationship('User', backref = 'part_post')
+	part = db.relationship('Partition', backref = 'user_post')
 	def __repr__(self):
 		return '<Post user_id: %d> <Post content: %s>' % (self.user_id, self.content)
 	

@@ -6,10 +6,8 @@
 			<div class = "media-body">
 				<embed src = "{{ url_for('static', filename = part.geturl()) }}" width = "800" height="375" type = "application/pdf">
 			</div>
-			<h4>editor 1 id: {{ part.editor1 }}</h2>
-			<h3> {{post1}} </h2>
-			<h4>editor 2 id: {{ part.editor2 }}</h2>
-			<h3> {{post2}} </h2>
+			<h6> {{part.user_post[0].user.username}}:  {{part.user_post[0].getcontent()}} </h6>
+			<h6> {{part.user_post[1].user.username}}:  {{part.user_post[1].getcontent()}} </h6>
 		</div>
 	{% endfor %}
 {% endblock content %}

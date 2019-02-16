@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class = starter-template>
+<div class = "jumbotron text-center">
+	<div class ="container">
 	{%if not current_user.is_anonymous%}
 		<h1 class="display-4 mb-4"> Welcome back {{current_user.username}}</h1>
 		<div class = "mt-5">
@@ -10,8 +11,37 @@
 		<h1 class="display-4 font-weight-bold"> Welcome to Archer </h1>
 		<p> This is the homepage of Archer, a web application designed for PDF transcribition</p>
 		<div class = "mt-5">
-			<p><a class="btn btn-primary btn-lg" href="{{ url_for('about') }}" role="button">About Us &raquo;</a></p>
+			<p><a class="btn btn-primary btn-lg" href="{{ url_for('login') }}" role="button">Login Now &raquo;</a></p>
 		</div>
 	{% endif %}
+	</div>
 </div>
+<div class = "container">
+	<div class = "row">
+		<div class = "col-md-4">
+			<h3>Join Us</h3>
+			<p>Become a member of this project to help us to accomplished the transformation from PDF certificates to e-form of different certificates.</p>
+			{%if current_user.is_anonymous%}
+			<p><a class = "btn btn-secondary" href="{{url_for('register')}}" role = "button"> Right now&raquo;</a></p>
+			{%else%}
+			<p><a class = "btn btn-secondary disabled" href="{{url_for('register')}}" role = "button" aria-disabled="true"> Right now&raquo;</a></p>
+			{%endif%}
+		</div>
+		<div class = "col-md-4">
+			<h3>Go to Work</h3>
+			<p>Try to help us with your experience of transcription!</p>
+			{%if not current_user.is_anonymous%}
+			<p><a class = "btn btn-secondary" href="{{url_for('work')}}" role = "button"> Right now&raquo;</a></p>
+			{%else%}
+			<p><a class = "btn btn-secondary disabled" href="{{url_for('work')}}" role = "button" aria-disabled="true"> Right now&raquo;</a></p>
+			{%endif%}
+		</div>
+		<div class = "col-md-4">
+			<h3>About Us</h3>
+			<p>This is a computing project accomplished by a group of Master of Information Techonology students of the University of Melbourne.</p>
+			<p><a class = "btn btn-secondary" href="{{url_for('about')}}" role = "button"> Learn More&raquo;</a></p>
+		</div>
+	</div>
+</div>
+
 {% endblock content %}

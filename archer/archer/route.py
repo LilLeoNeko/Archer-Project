@@ -42,72 +42,32 @@ def admin():
 @app.route('/upload', methods=["POST"])
 @login_required
 def upload():
+	if request.files.getlist("files") == []:
+		flash('No file has been selected. Please select one', 'danger')
+		return redirect(url_for('admin'))
 	target = os.path.join(APP_ROOT, 'static/')
 	if not os.path.isdir(target):
 		os.mkdir(target)
-	if 'file' not in request.files:
-		flash('No file has been submit', 'danger')
-		return redirect(url_for('admin'))
-
-	for file in request.files.getlist("birth_1"):
+	for file in request.files.getlist("files"):
 		print(file)
+		select = str(request.form.get('select'))+'/'
+		print (select)
 		if file:
-			filename=file.filename
-			target1 = os.path.join(target, 'birth_1/')
-			if not os.path.isdir(target1):
-				os.mkdir(target1)
-			destination = "/".join([target1, filename])
-			print(destination)
-			file.save(destination)
-			newdoc = Document(docname = filename, doctype = "birth_1")
-			db.session.add(newdoc)
-			db.session.commit()
-			CropPdf(filename, target1)
-
-	for file in request.files.getlist("death_1"):
-		print(file)
-		if file:
-			filename=file.filename
-			target1 = os.path.join(target, 'death_1/')
-			if not os.path.isdir(target1):
-				os.mkdir(target1)
-			destination = "/".join([target1, filename])
-			print(destination)
-			file.save(destination)
-			newdoc = Document(docname = filename, doctype = "death_1")
-			db.session.add(newdoc)
-			db.session.commit()
-			CropPdf(filename, target1)
-
-	for file in request.files.getlist("death_2"):
-		print(file)
-		if file:
-			filename=file.filename
-			target1 = os.path.join(target, 'death_2/')
-			if not os.path.isdir(target1):
-				os.mkdir(target1)
-			destination = "/".join([target1, filename])
-			print(destination)
-			file.save(destination)
-			newdoc = Document(docname = filename, doctype = "death_2")
-			db.session.add(newdoc)
-			db.session.commit()
-			CropPdf(filename, target1)
-
-	for file in request.files.getlist("death_3"):
-		print(file)
-		if file:
-			filename=file.filename
-			target1 = os.path.join(target, 'death_3/')
-			if not os.path.isdir(target1):
-				os.mkdir(target1)
-			destination = "/".join([target1, filename])
-			print(destination)
-			file.save(destination)
-			newdoc = Document(docname = filename, doctype = "death_3")
-			db.session.add(newdoc)
-			db.session.commit()
-			CropPdf(filename, target1)
+			filename = file.filename
+			if Document.query.filter_by(docname = filename).first():
+				flash('The document you choose already existed.','danger')
+				return redirect(url_for('admin'))
+			else:
+				target1 = os.path.join(target, select)
+				if not os.path.isdir(target1):
+					os.mkdir(target1)
+				destination = "/".join([target1, filename])
+				print(destination)
+				file.save(destination)
+				newdoc = Document(docname = filename, doctype = select)
+				db.session.add(newdoc)
+				db.session.commit()
+				CropPdf(filename, target1)
 
 	return render_template("upload_completed.html")
 
@@ -165,9 +125,17 @@ def register():
 @app.route('/work', methods=['GET','POST'])
 @login_required
 def work():
-	global cur_part
+
+	# check if there is Partition in system or not
+	if not Partition.query.first():
+		flash('Workshop is not available currently, please ask admin to upload files.',
+			'danger')
+		return redirect(url_for('home'))
+
 	# first of all, return a random partition id 
 	# and check it has been edited by current_user or not
+	global cur_part
+	
 	rand_part = Partition.query.filter(Partition.count < 2).\
 				filter(Partition.editor1 != current_user.id).\
 				filter(Partition.editor2 != current_user.id).\
@@ -176,28 +144,34 @@ def work():
 	if request.method == 'GET':
 		cur_part = rand_part
 	col_num = cur_part.getcolumn()
+	properties = cur_part.getproperties()
 
 	# considering post form as a temporal form
 	# which may varies due to different partition have different columns
 
 	class PostForm(FlaskForm):
 		pass
-
-	for i in range(0,col_num):
-		setattr (PostForm,'field'+str(i), StringField('content', 
-													validators = [DataRequired()]) )
+	i = 0
+	for prop in properties:
+		setattr (PostForm,'field'+str(i), StringField(prop,validators = [DataRequired()]))
+		i += 1
 	setattr(PostForm, 'submit', SubmitField('Next'))
 	form = PostForm()
 
 	if form.validate_on_submit():
-		templist = ""
+		x = 0
 		for field in form:
-			if field.type == 'StringField':
+			if field.type == 'StringField' and x == 0:
+				templist  = '%s' % field.data
+			elif field.type == 'StringField':
 				templist  += ';%s' % field.data
-		
-		newpost = Post(user_id = current_user.getid(),
-						part_id = cur_part.getid(),
-						content = templist)
+			x += 1
+
+		newpost = Post(content = templist)
+		setattr(newpost,'part', Partition.query.filter_by(id = cur_part.id).first())
+		setattr(newpost,'user', current_user)
+		current_user.partitions.append(newpost)
+
 		db.session.add(newpost)
 
 		# get current count
@@ -256,16 +230,18 @@ def check():
 	for part in temp_parts:
 		posts = Post.query.filter_by(part_id = part.getid()).all()
 		post1 = posts[0].getcontent()
+		del post1[0]
 		post2 = posts[1].getcontent()
+		del post2[0]
+
 		if post1 != post2:
 			#part.setflag()
 			setattr(part, 'flag', True)
-	
 	temp_parts = Partition.query.filter_by(flag = True).all()
 	
-	return render_template('checkPage.html', parts = temp_parts, post1 = post1, post2 = post2)
+	return render_template('checkPage.html', parts = temp_parts)
 
-@app.route('/check/detail')
+@app.route('/test', methods = ['GET','POST'])
 @login_required
-def detail():
+def test():
 	return render_template('test.html')
