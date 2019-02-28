@@ -1,7 +1,7 @@
 # Archer-Project
 Computing Project for Master of Information Technology in University of Melbourne
 
-prefer operating system: Mac OS;
+prefer operating system: Mac OS.
 Warning: Using Windows will lead to the result of missing "python3" command, which will makes admin upload certificate function not working properly.
 
 installation:
