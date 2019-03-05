@@ -15,6 +15,8 @@ installation:
 4. using command line to go to archer folder, e.g "cd Archer-Project/archer" and execute the program e.g "python runArcher.py"
 5. go to your local host by browser(default is 127.0.0.1/5000)
 
+System default admin account is admin@archer.com, password is abcd1234
+
 
 
 # How to use PdfCrop
